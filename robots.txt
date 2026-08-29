@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://assassinationss.github.io/sitemap.xml
