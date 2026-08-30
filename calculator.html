@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Landed Cost Calculator — Importing from China (2026)</title>
+<meta name="description" content="Free interactive landed cost calculator for importers: FOB price, freight, duty, VAT, customs fees. See the true per-unit cost of your China order in 2026's post-de-minimis reality.">
+<link rel="stylesheet" href="/style.css">
+<style>
+.calc{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:20px}
+@media(max-width:720px){.calc{grid-template-columns:1fr}}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:13.5px;font-weight:600;color:var(--navy);margin-bottom:4px}
+.field input{width:100%;padding:9px 12px;border:1px solid var(--line);border-radius:8px;font-size:15px}
+.field .hint{font-size:12.5px;color:var(--muted);margin-top:3px}
+.result{background:var(--navy);color:#fff;border-radius:12px;padding:24px 26px}
+.result .big{font-size:34px;font-weight:800;margin:6px 0 2px}
+.result .sub{color:#9db8d4;font-size:13.5px}
+.breakdown{margin-top:18px;font-size:14px}
+.breakdown td{border-color:#2a4a6b;padding:6px 10px}
+.breakdown th{background:#16334f;color:#cfe0f0;border-color:#2a4a6b}
+.total-row td{font-weight:800;background:#16334f}
+.note{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 18px;font-size:14px;color:var(--muted);margin-top:16px}
+button.recalc{background:var(--navy-l);color:#fff;border:0;padding:11px 24px;border-radius:8px;font-weight:700;font-size:15px;cursor:pointer;margin-top:6px}
+</style>
+</head>
+<body>
+<header class="site"><div class="wrap"><a href="/">🔎 Sol Research Desk</a></div></header>
+<main class="wrap">
+<h1>Landed Cost Calculator</h1>
+<p class="meta">Free tool · by <a href="https://github.com/assassinationss">Sol Research Desk</a> · part of the <a href="https://github.com/assassinationss/awesome-china-sourcing">China Sourcing toolkit</a></p>
+<p>The price on the PI is the beginning of the math, not the end. This calculator adds freight, insurance, duty (post-de-minimis 2026), customs fees, and VAT to give you the true per-unit cost — the number you actually margin against.</p>
+
+<div class="calc">
+<div>
+<h3 style="margin-top:0">Your inputs</h3>
+<div class="field"><label>FOB unit price (USD)</label><input id="fob" type="number" step="0.01" value="4.50"><div class="hint">Quoted price per unit, FOB Chinese port</div></div>
+<div class="field"><label>Order quantity (units)</label><input id="qty" type="number" step="1" value="500"></div>
+<div class="field"><label>Total freight (USD, sea/air to your port)</label><input id="freight" type="number" step="1" value="650"><div class="hint">Get forwarder quotes; air freight is 8–15× sea</div></div>
+<div class="field"><label>Insurance (% of CIF value)</label><input id="ins" type="number" step="0.1" value="0.3"><div class="hint">Typically 0.2–0.5%</div></div>
+<div class="field"><label>Duty rate (%) — import country</label><input id="duty" type="number" step="0.1" value="25"><div class="hint">US: base + Section 301 for many China goods (e.g. 7.5–25%+). Check your HTS code.</div></div>
+<div class="field"><label>Customs/entry fees (USD, total)</label><input id="fees" type="number" step="1" value="125"><div class="hint">Broker + entry + Merchandise Processing Fee</div></div>
+<div class="field"><label>VAT/sales tax at import (%)</label><input id="vat" type="number" step="0.1" value="0"><div class="hint">EU/UK pay at import; US sales tax usually at sale instead</div></div>
+<div class="field"><label>Other costs (USD, total)</label><input id="other" type="number" step="1" value="150"><div class="hint">QC inspection, agent, inland freight to warehouse</div></div>
+<button class="recalc" onclick="calc()">Calculate landed cost</button>
+</div>
+<div>
+<h3 style="margin-top:0">True per-unit cost</h3>
+<div class="result">
+<div class="sub">LANDED COST PER UNIT</div>
+<div class="big" id="perUnit">$—</div>
+<div class="sub" id="markup">—</div>
+<table class="breakdown" id="bdTable">
+<tr><th>Cost layer</th><th>Total</th><th>Per unit</th></tr>
+<tbody id="bd"></tbody>
+</table>
+</div>
+<div class="note" id="note"></div>
+</div>
+</div>
+
+<h2>Reading the result</h2>
+<ul>
+<li><b>Landed vs FOB markup</b> — under ~25–35% is healthy for sea freight at typical MOQs. Over 50% usually means: freight quote too high, order too small, or duty rate worse than assumed.</li>
+<li><b>The 2026 reality</b> — the $800 de minimis exemption is gone. Every commercial import pays duty; small "test orders" that used to dodge fees now don't. That's why verification before ordering matters more than ever: <a href="guides/verify-supplier.html">verify before you wire</a>.</li>
+<li><b>Fees you can't negotiate vs can</b> — duty and VAT are fixed by code and value. Freight is negotiable (three quotes minimum). FOB price is negotiable — that's the <a href="https://assassinationss.github.io/china-sourcing-playbook/">Playbook's</a> territory.</li>
+</ul>
+
+<h2>Common duty ranges (US, China origin, indicative only)</h2>
+<table>
+<tr><th>Category</th><th>Typical range</th><th>Note</th></tr>
+<tr><td>Apparel & textiles</td><td>16–32%</td><td>Material-specific; some lines higher</td></tr>
+<tr><td>Consumer electronics</td><td>0–7.5%</td><td>Many zero-rated; check accessories separately</td></tr>
+<tr><td>Toys</td><td>0–7.5%</td><td>Often zero + 301 add-ons</td></tr>
+<tr><td>Home & kitchen</td><td>3–12%</td><td>Stainless/glass/ceramic vary</td></tr>
+<tr><td>Machinery parts</td><td>0–8%</td><td>Component-dependent</td></tr>
+</table>
+<p style="font-size:13.5px;color:var(--muted)">Indicative only — always classify by your HTS code. This calculator runs entirely in your browser; no data leaves the page.</p>
+<p><a class="cta" href="https://assassinationss.github.io/china-sourcing-playbook/">Get the 25-template Playbook →</a></p>
+</main>
+<footer class="site"><div class="wrap">Sol Research Desk · free sourcing intelligence · <a href="https://github.com/assassinationss">GitHub</a> · <a href="https://assassinationss.github.io/china-sourcing-playbook/">The China Sourcing Playbook</a></div></footer>
+<script>
+function fmt(n){return '$'+n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}
+function calc(){
+var fob=+document.getElementById('fob').value||0,
+q=+document.getElementById('qty').value||1,
+fr=+document.getElementById('freight').value||0,
+insPct=(+document.getElementById('ins').value||0)/100,
+dutyPct=(+document.getElementById('duty').value||0)/100,
+fees=+document.getElementById('fees').value||0,
+vatPct=(+document.getElementById('vat').value||0)/100,
+other=+document.getElementById('other').value||0;
+var goods=fob*q, cif=goods+fr, ins=cif*insPct, duty=(goods+fr+ins)*dutyPct, vat=(goods+fr+ins+duty+fees)*vatPct;
+var rows=[['Goods (FOB)',goods],['Freight',fr],['Insurance',ins],['Duty',duty],['Customs/entry fees',fees],['VAT at import',vat],['Other (QC/inland/agent)',other]];
+var total=rows.reduce((s,r)=>s+r[1],0);
+var bd=document.getElementById('bd');bd.innerHTML='';
+rows.forEach(r=>{bd.innerHTML+='<tr><td>'+r[0]+'</td><td>'+fmt(r[1])+'</td><td>'+fmt(r[1]/q)+'</td></tr>'});
+bd.innerHTML+='<tr class="total-row"><td>Landed total</td><td>'+fmt(total)+'</td><td>'+fmt(total/q)+'</td></tr>';
+document.getElementById('perUnit').textContent=fmt(total/q);
+var mk=(total/goods-1)*100;
+document.getElementById('markup').textContent='Landed markup over FOB: +'+mk.toFixed(1)+'% · order '+q.toLocaleString()+' units · FOB '+fmt(goods);
+var note=document.getElementById('note');
+if(mk>50){note.innerHTML='<b>⚠ Markup over 50%.</b> Suspect: freight quote (get 3 bids), order size (sea freight needs volume), or duty assumption. Small orders on air freight routinely hit 100%+ — see the guide.'}
+else if(mk<15){note.innerHTML='<b>✓ Tight markup.</b> Either a large consolidated order or cheap freight. Double-check insurance and entry fees aren\'t understated.'}
+else{note.innerHTML='<b>✓ Typical range.</b> 15–35% over FOB is normal for sea freight at standard MOQs. Negotiate the two levers that move: FOB price and freight.'}
+}
+calc();
+</script>
+</body>
+</html>
