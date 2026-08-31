@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Supplier Red-Flag Checker — Score Any China Supplier in 3 Minutes</title>
+<meta name="description" content="Free interactive red-flag checker: 12 questions score any Chinese supplier against the VERIFY system — license cross-checks, payment safety, scam patterns. Runs in your browser.">
+<link rel="stylesheet" href="/style.css">
+<style>
+.chk{display:grid;grid-template-columns:1.15fr .85fr;gap:26px;margin-top:18px}
+@media(max-width:760px){.chk{grid-template-columns:1fr}}
+.q{border:1px solid var(--line);border-radius:10px;padding:13px 16px;margin-bottom:10px;background:var(--card)}
+.q .qt{font-size:14.5px;font-weight:600;color:var(--navy);margin-bottom:3px}
+.q .qd{font-size:12.5px;color:var(--muted);margin-bottom:9px}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.seg button{border:0;background:#fff;padding:6px 16px;font-size:13.5px;font-weight:600;cursor:pointer;color:var(--muted)}
+.seg button.on-yes{background:#16a34a;color:#fff}
+.seg button.on-no{background:#dc2626;color:#fff}
+.crit{font-size:11px;font-weight:700;color:#b45309;background:#fffbeb;border:1px solid #fde68a;border-radius:5px;padding:1px 7px;margin-left:6px;vertical-align:middle}
+.score-panel{position:sticky;top:14px}
+.gauge{background:var(--navy);color:#fff;border-radius:12px;padding:22px 24px}
+.gauge .sub{color:#9db8d4;font-size:12.5px;letter-spacing:.5px}
+.gauge .big{font-size:52px;font-weight:800;line-height:1.05;margin:4px 0 2px}
+.bar{height:9px;background:#16334f;border-radius:5px;overflow:hidden;margin:10px 0 4px}
+.bar>div{height:100%;width:0;border-radius:5px;transition:width .4s}
+.band{font-size:14.5px;font-weight:700;margin-top:6px}
+.deal{background:#fef2f2;border:1px solid #fecaca;border-radius:10px;padding:12px 15px;font-size:13.5px;color:#7f1d1d;margin-top:12px;display:none}
+.deal b{color:#991b1b}
+.verdict{font-size:13.5px;color:#cfe0f0;margin-top:10px;line-height:1.5}
+.embed{font-size:12px;color:var(--muted);background:var(--card);border:1px dashed var(--line);border-radius:8px;padding:10px 13px;margin-top:14px;word-break:break-all}
+</style>
+</head>
+<body>
+<header class="site"><div class="wrap"><a href="/">🔎 Sol Research Desk</a></div></header>
+<main class="wrap">
+<h1>Supplier Red-Flag Checker</h1>
+<p class="meta">Free tool · by <a href="https://github.com/assassinationss">Sol Research Desk</a> · the interactive version of the <a href="https://github.com/assassinationss/awesome-china-sourcing">VERIFY system</a></p>
+<p>Twelve questions. Three minutes. The same red flags that separate real factories from the trade-company shells and prepaid-fee scams that eat importers' deposits — scored live as you answer.</p>
+
+<div class="chk">
+<div id="qlist"></div>
+<div>
+<div class="score-panel">
+<div class="gauge">
+<div class="sub">SUPPLIER SAFETY SCORE</div>
+<div class="big" id="score">—</div>
+<div class="bar"><div id="fill"></div></div>
+<div class="band" id="band">Answer the questions to score</div>
+<div class="verdict" id="verdict">12 questions · 3 dealbreaker items · live scoring</div>
+</div>
+<div class="deal" id="deal"></div>
+<p style="font-size:13px;color:var(--muted);margin-top:12px">Nothing is sent anywhere — scoring runs entirely in your browser.</p>
+</div>
+</div>
+</div>
+
+<h2>How to read the score</h2>
+<ul>
+<li><b>80–100 · Looks clean on paper.</b> Still get the documents before the wire: license, PI, and account name must match exactly. Clean checklists have been faked; cross-checked documents rarely are.</li>
+<li><b>50–79 · Proceed with caution.</b> The failed items are your pre-wire checklist. Each one is fixable — a real supplier clears them in days; a shell stalls for weeks.</li>
+<li><b>Below 50 · High-risk pattern.</b> Most deposit-loss scams we've documented look exactly like this: pressure tactics + personal account + 100% upfront. Walking away is cheaper than wiring.</li>
+</ul>
+<p><b>Scored below 80?</b> The <a href="https://assassinationss.github.io/china-sourcing-playbook/">China Sourcing Playbook</a> contains the full 25-template verification and negotiation system — including the exact messages that clear each failed item above. And if you're still pricing the order, run the <a href="calculator.html">landed cost calculator</a> next.</p>
+<div class="embed">Free to embed on your site: <code>&lt;iframe src="https://assassinationss.github.io/checker.html" width="100%" height="950"&gt;&lt;/iframe&gt;</code></div>
+</main>
+<footer class="site"><div class="wrap">Sol Research Desk · free sourcing intelligence · <a href="https://github.com/assassinationss">GitHub</a> · <a href="https://assassinationss.github.io/china-sourcing-playbook/">The China Sourcing Playbook</a></div></footer>
+<script>
+var QS=[
+["license","They sent their business license (营业执照) promptly when you asked","A real factory sends it in minutes — hesitation here predicts hesitation everywhere. Weight 12.","no"],
+["names","License name = PI/invoice name = bank account name","The three-name match is the single strongest anti-fraud check that costs zero. Mismatch = money leaves the contract. Weight 18.","yes"],
+["capital","Registered capital ≥ ¥1M and business scope covers your product","Read it off the license — here's <a href='guides/business-license.html'>how to decode one</a>. Trading shells often fail the scope line. Weight 8.","no"],
+["video","They agreed to a LIVE video walkthrough of the production floor","Live, not a pre-recorded clip — ask them to wave at the camera on today's date. Weight 10.","no"],
+["bank","Payment goes to a company bank account, not a personal one","Personal account requests are the classic prepaid scam pattern. No exceptions on this one. Weight 14.","yes"],
+["terms","They accept 30% deposit / 70% before shipping","100% upfront transfers all risk to you; factories with real order books don't need it. Weight 14.","yes"],
+["refs","2+ export references you can independently verify","Shipments, customers, or port records — verifiable, not just names. Weight 5.","no"],
+["price","Quote is within market range (not 30%+ below next-best quote)","Too-cheap-to-be-true is the oldest bait there is. Cross-check on 1688 or with a second quote. Weight 5.","no"],
+["spec","Technical questions got specific answers (materials, tolerances, certs)","Vagueness on specs = a trading company relaying your questions, or worse. Weight 8.","no"],
+["domain","They email from a company domain, not free gmail/163/outlook","Small factories using free mail exist — but combined with other flags it's a multiplier. Weight 3.","no"],
+["certs","Required certifications (CE/FCC/CPC…) known and documented","'No problem, we have all certificates' without attachment = phrase #5 in the <a href='guides/supplier-phrases.html'>decoder</a>. Weight 3.","no"],
+["pressure","They push urgency: 'price rises tomorrow', 'another buyer wants your slot'","Scarcity theater is a pressure tactic — real capacity quotes stay valid for days. This one subtracts. Weight −15.","inv"]
+];
+var st={};QS.forEach(function(q){st[q[0]]=null});
+function w(q){return {license:12,names:18,capital:8,video:10,bank:14,terms:14,refs:5,price:5,spec:8,domain:3,certs:3,pressure:15}[q[0]]}
+function render(){
+var h='';QS.forEach(function(q,i){
+var v=st[q[0]];var yc=v===true?' on-yes':'',nc=v===false?' on-no':'';
+h+='<div class="q"><div class="qt">'+(i+1)+'. '+q[1]+(q[3]==='yes'?'<span class="crit">DEALBREAKER</span>':'')+'</div><div class="qd">'+q[2]+'</div><div class="seg"><button class="b-yes'+yc+'" onclick="ans(\''+q[0]+'\',true)">Yes</button><button class="b-no'+nc+'" onclick="ans(\''+q[0]+'\',false)">No</button></div></div>'
+});
+document.getElementById('qlist').innerHTML=h;
+}
+function ans(id,v){st[id]=v;render();score()}
+function score(){
+var answered=0,tot=0,max=0,critFail=[],vtxt='';
+QS.forEach(function(q){
+var ww=w(q);if(q[3]==='inv'){if(st[q[0]]===true){tot-=ww}if(st[q[0]]!==null)answered++;return}
+max+=ww;if(st[q[0]]===true)tot+=ww;if(st[q[0]]!==null)answered++;
+if(q[3]==='yes'&&st[q[0]]===false)critFail.push(q[1].split('(')[0].trim())
+});
+var pct=Math.max(0,Math.round(tot/max*100));
+var fill=document.getElementById('fill'),band=document.getElementById('band'),vd=document.getElementById('verdict'),dl=document.getElementById('deal');
+var prog=answered<QS.length?'<br><span style="color:#9db8d4">Answered '+answered+' of '+QS.length+'</span>':'<br><span style="color:#9db8d4">All '+QS.length+' answered</span>';
+if(answered===0){document.getElementById('score').textContent='—';return}
+document.getElementById('score').textContent=pct;
+fill.style.width=pct+'%';
+if(pct>=80){fill.style.background='#16a34a';band.textContent='✓ Looks clean on paper';band.style.color='#86efac';
+vtxt='Strong pattern. Before the wire: license, PI and account names must match <i>exactly</i> — then <a href="guides/pay-supplier.html" style="color:#cfe0f0">pay by the safe instruments</a>. Documents beat vibes.'}
+else if(pct>=50){fill.style.background='#d97706';band.textContent='⚠ Proceed with caution';band.style.color='#fcd34d';
+vtxt='Workable supplier with gaps. Clear the failed items <b>before</b> the deposit — each one is a message template in the <a href="https://assassinationss.github.io/china-sourcing-playbook/" style="color:#cfe0f0">Playbook</a>.'}
+else{fill.style.background='#dc2626';band.textContent='✗ High-risk pattern';band.style.color='#fca5a5';
+vtxt='This is what deposit-loss scams look like from the outside. Walking away costs nothing; wiring costs everything. If one flag is wrong, re-verify it — but do not pay.'}
+vd.innerHTML=vtxt+prog;
+dl.style.display=critFail.length?'block':'none';
+if(critFail.length)dl.innerHTML='<b>⚠ Dealbreaker'+(critFail.length>1?'s':'')+' failed:</b> '+critFail.join(' · ')+'. These override the total score — a supplier failing any of these should not receive a deposit, whatever the number says.';
+}
+render();
+</script>
+</body>
+</html>
