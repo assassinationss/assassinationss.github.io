@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CNY 2027 Order Deadline Calculator — Chinese New Year Factory Shutdown</title>
+<meta name="description" content="Chinese New Year 2027 starts Feb 6 — 11 days earlier than 2026. Calculate your last safe order date from China: production lead time + freight + the real factory shutdown timeline, not the official one.">
+<link rel="stylesheet" href="/style.css">
+<style>
+.calc{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:20px}
+@media(max-width:720px){.calc{grid-template-columns:1fr}}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:13.5px;font-weight:600;color:var(--navy);margin-bottom:4px}
+.field input,.field select{width:100%;padding:9px 12px;border:1px solid var(--line);border-radius:8px;font-size:15px;background:#fff}
+.field .hint{font-size:12.5px;color:var(--muted);margin-top:3px}
+.result{background:var(--navy);color:#fff;border-radius:12px;padding:24px 26px;border-left:6px solid #16a34a}
+.result.warn{border-left-color:#d97706}
+.result.late{border-left-color:#dc2626}
+.result .big{font-size:32px;font-weight:800;margin:6px 0 2px}
+.result .sub{color:#9db8d4;font-size:13.5px}
+.days{font-size:15px;font-weight:700;color:#ffd479;margin-top:6px}
+.dates{margin-top:16px;font-size:13.5px;width:100%}
+.dates td{border-color:#2a4a6b;padding:6px 8px}
+.dates td:first-child{color:#cfe0f0}
+.dates td:last-child{font-weight:700}
+.note{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 18px;font-size:14px;color:var(--muted);margin-top:16px}
+button.recalc{background:var(--navy-l);color:#fff;border:0;padding:11px 24px;border-radius:8px;font-weight:700;font-size:15px;cursor:pointer;margin-top:6px}
+.flag{background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:14px 18px;font-size:14.5px;margin:18px 0}
+</style>
+</head>
+<body>
+<header class="site"><div class="wrap"><a href="/">🔎 Sol Research Desk</a></div></header>
+<main class="wrap">
+<h1>CNY 2027 Order Deadline Calculator</h1>
+<p class="meta">Free tool · by <a href="https://github.com/assassinationss">Sol Research Desk</a> · part of the <a href="https://github.com/assassinationss/awesome-china-sourcing">China Sourcing toolkit</a></p>
+<p><b>Chinese New Year 2027 begins Saturday, February 6 — 11 days earlier than 2026.</b> If you planned last year's order in mid-January and shipped fine, that same schedule this season misses the boat. This calculator maps your lead time onto the <i>real</i> shutdown calendar — when workers actually leave, when export trucks actually stop, and when lines actually run at full speed again.</p>
+
+<div class="calc">
+<div>
+<h3 style="margin-top:0">Your inputs</h3>
+<div class="field"><label>Production lead time (days)</label><input id="lead" type="number" step="1" value="30"><div class="hint">PO + deposit → goods ready, ex-works. Ask the factory for <i>their</i> number, then add a week.</div></div>
+<div class="field"><label>Freight mode (door-to-door transit)</label>
+<select id="mode">
+<option value="32">Ocean FCL — ~32 days</option>
+<option value="42" selected>Ocean LCL — ~42 days</option>
+<option value="22">China–EU rail — ~22 days</option>
+<option value="7">Air freight — ~7 days</option>
+<option value="3">Courier (DHL/FedEx) — ~3 days</option>
+</select>
+<div class="hint">Port-to-port + inland legs. LCL adds consolidation delays.</div></div>
+<div class="field"><label>Customs + shelf buffer (days)</label><input id="buf" type="number" step="1" value="7"><div class="hint">Clearance, last-mile, listing. Post-de-minimis exams add days.</div></div>
+<div class="field"><label>Order cycle</label>
+<select id="cycle">
+<option value="1">One pre-CNY order (single window)</option>
+<option value="2">Also quote a post-CNY restock</option>
+</select></div>
+<button class="recalc" onclick="calc()">Calculate my deadline</button>
+<p class="hint" style="margin-top:10px">Runs entirely in your browser. Nothing is sent anywhere.</p>
+</div>
+<div>
+<h3 style="margin-top:0">Your last safe order date</h3>
+<div class="result" id="res">
+<div class="sub">LATEST PO + DEPOSIT DATE (PRE-CNY TRACK)</div>
+<div class="big" id="lastOrder">—</div>
+<div class="sub" id="shipLine">—</div>
+<div class="days" id="days"></div>
+<table class="dates" id="tbl"></table>
+</div>
+<div class="note" id="note"></div>
+</div>
+</div>
+
+<div class="flag">🧧 <b>The 11-day trap.</b> CNY fell on Feb 17 in 2026; it falls on Feb 6 in 2027. Every buyer who reuses last season's calendar orders ~2 weeks too late. Vessels in the final two pre-CNY sailings are overbooked by early January.</div>
+
+<h2>The real 2027 shutdown calendar</h2>
+<p>The official holiday is 8 days. Your supplier's production reality is closer to five weeks of disruption. Plan against this, not the State Council table:</p>
+<table>
+<tr><th>What</th><th>When (2027)</th><th>What actually happens</th></tr>
+<tr><td>Workers start heading home</td><td>~Jan 18 – Feb 3</td><td>Line staff leave in waves on staggered train tickets; overtime capacity disappears first, then second shifts. Output quietly drops 2–3 weeks before the holiday.</td></tr>
+<tr><td>Courier / trucker cutoff</td><td>~Jan 29</td><td>Export trucking and customs declaration slow to a crawl; final sailings overbooked. Book space 2–3 weeks earlier than you think you need.</td></tr>
+<tr><td>Official holiday</td><td>Feb 6 – ~Feb 13</td><td>Expected 8 days (State Council schedule typically published Oct–Dec). Offices closed, everyone off.</td></tr>
+<tr><td>Skeleton crews return</td><td>~Feb 14 – 20</td><td>Lantern Festival (Feb 20): 30–60% line attendance. Assembly runs, but yields suffer — the worst week to start a new SKU.</td></tr>
+<tr><td>Full production restart</td><td>~Mar 1</td><td>The <i>real</i> restart for most export factories. Anything promised "right after the holiday" lands here, not Feb 14.</td></tr>
+<tr><td>Price adjustment window</td><td>March</td><td>New-year quotes move up 3–10%: labor, raw materials, and RMB direction all reprice in this window. Lock repeat-order pricing before you go silent for the holiday.</td></tr>
+</table>
+
+<h2>What buyers get wrong</h2>
+<ul>
+<li><b>"The holiday is only 8 days."</b> For you, the importer, it's a 3–5 week production canyon (late Jan → early March) plus a February of partial attendance. The calculator above uses the conservative trucker cutoff; your factory's <i>real</i> last production day is earlier than the day they quote you.</li>
+<li><b>Accepting goods rushed in the final fortnight.</b> Pre-CNY rush jobs are the classic quality disaster: new temp workers, double shifts, skipped inspections. If your goods-ready date lands inside Jan 20 – Feb 3, <a href="checker.html">score your supplier's red flags first</a> and put a third-party QC hold on the shipment.</li>
+<li><b>Radio silence ≠ ignored.</b> Between Jan 25 and Feb 20 your emails sit unread. Send your engineering changes, artwork approvals, and PO confirmations before Jan 15 — or expect a mid-March resolution.</li>
+<li><b>Repricing shock.</b> A quote from December is dead by March. Lock a volume commitment at pre-CNY pricing with a validity clause — one of the 25 templates in the <a href="https://assassinationss.github.io/china-sourcing-playbook/">Playbook</a> handles exactly this.</li>
+</ul>
+
+<h2>Two ways to play it</h2>
+<ol>
+<li><b>The wall play (pre-CNY):</b> order early, land goods before the canyon, sleep through February with inventory in your warehouse. Costs capital; buys certainty.</li>
+<li><b>The bridge play (post-CNY):</b> place the PO in November–December at old pricing, agree a March ex-works date, skip the rush-job risk entirely. You wait, but you wait cheap. Note the March repricing — your locked price is the whole point.</li>
+</ol>
+<p>Running tight? <a href="calculator.html">Landed Cost Calculator</a> tells you what an air-freight rescue costs per unit — usually it argues for the bridge play.</p>
+
+<p style="font-size:12px;color:var(--muted);background:var(--card);border:1px dashed var(--line);border-radius:8px;padding:10px 13px;word-break:break-all">Free to embed on your site: <code>&lt;iframe src="https://assassinationss.github.io/cny-deadline.html" width="100%" height="1300"&gt;&lt;/iframe&gt;</code> · Next: <a href="checker.html">score your supplier with the Red-Flag Checker</a></p>
+<p><a class="cta" href="https://assassinationss.github.io/china-sourcing-playbook/">Get the 25-template Playbook →</a></p>
+</main>
+<footer class="site"><div class="wrap">Sol Research Desk · free sourcing intelligence · <a href="https://github.com/assassinationss">GitHub</a> · <a href="https://assassinationss.github.io/china-sourcing-playbook/">The China Sourcing Playbook</a></div></footer>
+<script>
+function D(y,m,d){return Date.UTC(y,m-1,d)}
+function f(t){return new Date(t).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric',timeZone:'UTC'})}
+var CNY_EVE=D(2027,2,5), TRUCK_CUT=D(2027,1,29), RESTART=D(2027,3,1), BOOK=TRUCK_CUT-21*864e5;
+function calc(){
+var lead=Math.max(1,+document.getElementById('lead').value||30),
+transit=+document.getElementById('mode').value,
+buf=Math.max(0,+document.getElementById('buf').value||0),
+two=document.getElementById('cycle').value==='2';
+var lastOrder=TRUCK_CUT-lead*864e5,
+arrA=TRUCK_CUT+(transit+buf)*864e5,
+arrB=RESTART+(lead+transit+buf)*864e5;
+var now=new Date(), today=D(now.getFullYear(),now.getMonth()+1,now.getDate());
+var days=Math.round((lastOrder-today)/864e5);
+document.getElementById('lastOrder').textContent=f(lastOrder);
+document.getElementById('shipLine').textContent='to hit the last reliable pre-CNY sailing · CNY Eve: '+f(CNY_EVE);
+var res=document.getElementById('res'),note=document.getElementById('note');
+var rows=[
+['Your PO + deposit deadline',f(lastOrder)],
+['Goods must be ex-works by',f(TRUCK_CUT)],
+['Book vessel / truck space by',f(BOOK)],
+['Latest export departure',f(TRUCK_CUT)],
+['Arrives your warehouse (final sailing)',f(arrA)]
+];
+if(two)rows.push(['Post-CNY restock arrives',f(arrB)]);
+rows.push(['Factory full-speed restart',f(RESTART)]);
+var h='';rows.forEach(function(r){h+='<tr><td>'+r[0]+'</td><td>'+r[1]+'</td></tr>'});
+document.getElementById('tbl').innerHTML=h;
+var dEl=document.getElementById('days');
+if(days<0){res.className='result late';dEl.textContent='⚠ Pre-CNY window CLOSED for these inputs ('+Math.abs(days)+' days ago)';
+note.innerHTML='<b>The wall play is gone.</b> Switch to the bridge play: order now at pre-adjustment pricing, contract a post-restart ex-works date ('+f(RESTART)+' + '+lead+' days production), arrive '+f(arrB)+'. Rush the factory now and you get exactly the quality the Checker exists to prevent.';}
+else if(days<21){res.className='result warn';dEl.textContent='⏳ '+days+' days left — PO goes out THIS WEEK';
+note.innerHTML='<b>Tight but alive.</b> Two constraints bind now: (1) the factory stops accepting rush POs roughly 3 weeks before CNY; (2) vessel space on final sailings overbooks in early January. Deposit today, production slot confirmed in writing, <a href="checker.html">red-flag check</a> before you wire.';}
+else{res.className='result';dEl.textContent='✓ '+days+' days of room — calendar it anyway';
+note.innerHTML='<b>You have runway.</b> Order before the window turns yellow ('+f(lastOrder-21*864e5)+'). If your goods-ready date lands after Jan 20, budget a pre-CNY rush-job QC inspection — the fortnight before trucker cutoff is where defect rates spike.';}
+}
+calc();
+</script>
+</body>
+</html>

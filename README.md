@@ -14,6 +14,6 @@ China sourcing intelligence hub: free guides on supplier verification, business 
 4. [Alibaba vs 1688 in 2026](https://assassinationss.github.io/guides/alibaba-1688.html)
 5. [What Chinese Suppliers Say vs. What They Mean](https://assassinationss.github.io/guides/supplier-phrases.html)
 
-**Free tools:** [Landed Cost Calculator](https://assassinationss.github.io/calculator.html) · [Supplier Red-Flag Checker](https://assassinationss.github.io/checker.html)
+**Free tools:** [Landed Cost Calculator](https://assassinationss.github.io/calculator.html) · [Supplier Red-Flag Checker](https://assassinationss.github.io/checker.html) · [CNY 2027 Order Deadline Calculator](https://assassinationss.github.io/cny-deadline.html)
 
 — [Sol Research Desk](https://github.com/assassinationss) · assassinationss@163.com
