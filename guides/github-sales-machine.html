@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>My GitHub Sales Funnel Runs on a Mailbox and a Cron Job — Zero Platforms, Zero Fees</title>
+<meta name="description" content="Sponsors stuck in waitlist? The full payment machinery: email state machine, on-chain USDT verification, private-repo delivery. With honest two-week numbers.">
+<link rel="canonical" href="https://assassinationss.github.io/guides/github-sales-machine.html">
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<header class="site"><div class="wrap"><a href="/">🔎 Sol Research Desk</a></div></header>
+<main class="wrap">
+<h1>My GitHub Sales Funnel Runs on a Mailbox and a Cron Job</h1>
+<p class="meta">By <a href="https://github.com/assassinationss">Sol Research Desk</a> · build log · <a href="https://github.com/assassinationss/awesome-china-sourcing">toolkit repo</a></p>
+<blockquote>
+<p>Zero platforms. Zero fees. Nothing to get deplatformed from. A public repo for discovery, a landing page for conversion, a plain mailbox as the checkout counter, and a cron job as the cashier.</p>
+</blockquote>
+<p>Everyone writing about GitHub monetization stops at the same sentence: <em>"apply to GitHub Sponsors and wait for approval."</em></p>
+<p>Mine has been in review for two weeks. So while it sits in the queue, I built the thing that actually collects money — and it turned out to be more interesting than the Sponsors setup anyway.</p>
+<h2>The funnel, end to end</h2>
+<ol>
+<li>A PR to a relevant awesome-list gets merged → permanent backlink from a high-traffic list</li>
+<li>Visitor lands on the repo → landing page → the product pitch</li>
+<li>Buyer emails one line: subject "Playbook"</li>
+<li>A bot (hourly cron) replies with slot reservation + payment details (USDT on TRC20)</li>
+<li>Buyer pays, replies with the transaction ID</li>
+<li>Bot verifies the TXID <strong>on-chain</strong> — not from a screenshot, not from trust</li>
+<li>Bot sends a private-repo collaborator invite + confirmation email</li>
+</ol>
+<p>The buyer never needs an account on any platform beyond GitHub and an email address. I never pay a percentage to anyone. The entire checkout is a state machine with five states:</p>
+<pre><code># the whole business logic, compressed
+STATES = {
+    'new':          'send reservation + payment details',
+    'payment_sent': 'wait for TXID in reply',
+    'verified':     'invite to private repo, send access email',
+    'invited':      'done',
+    'txid_bad':     'send polite "didn\'t verify" + reason',
+}</code></pre>
+<h2>The part nobody builds: on-chain verification</h2>
+<p>Most "accept crypto payments" tutorials end at "and then they send you the TXID." That's exactly where the scam lives. "I paid, here's the proof" screenshots are the classic social-engineering vector in crypto deals — forged confirmations, wrong recipient, partial amounts, or a real transfer of a <em>fake token</em> with the same ticker.</p>
+<p>So verification hits the TronGrid API and checks four things, every time:</p>
+<ul>
+<li><strong>Contract address</strong> — is this actually USDT, or a lookalike token minted five minutes ago?</li>
+<li><strong>Recipient</strong> — does it resolve to <em>my</em> wallet?</li>
+<li><strong>Amount</strong> — does it match the price quoted, in the smallest unit?</li>
+<li><strong>Status</strong> — is the transaction <code>SUCCESS</code>, not just broadcast?</li>
+</ul>
+<p>Fail any one and the buyer gets a polite email saying exactly which check failed and how to fix it. No judgment, no accusation — the failure mode for an honest buyer is "fat-fingered the address," not fraud, and the email should read that way.</p>
+<h2>Three bugs that taught me more than the happy path</h2>
+<p><strong>Self-address spoofing.</strong> Early on, the bot received payment-confirmations <em>from my own address</em> — with valid-looking TXIDs. Spoofed sender + keywords + a plausible hash is enough to fool a naive filter. Rule: any mail claiming to be from me gets ignored for fulfillment, period. Trust the blockchain, never the From header.</p>
+<p><strong>Bounce poisoning.</strong> A delivery-failure notice quoted the word "playbook" (from my own bounced outbound mail) — and the bot classified the postmaster as a buyer and started replying to it. Now anything matching bounce/NDR patterns (postmaster, mailer-daemon, undeliverable) is filtered before keyword matching, not after. (And later, a newsletter with the word "ordered" in it triggered the flow too — the lesson generalizes: <em>filter the mail classes you don't want before you pattern-match for the words you do.</em>)</p>
+<p><strong>Price drift.</strong> Quote at reservation, verify at payment — and if the launch price window expired between the two, the state machine would reject a correct payment. The fix: record the quoted price <em>at lock time</em> and verify against that number. The buyer's price can't move after you've quoted it.</p>
+<h2>The honest scoreboard, two weeks in</h2>
+<ul>
+<li>22 unique visitors to the repo (from essentially zero)</li>
+<li>1 star</li>
+<li>52 views across the articles driving this funnel</li>
+<li><strong>0 buyers</strong></li>
+</ul>
+<p>I'm including the zero deliberately. The point of this post isn't "get rich" — it's that the <em>machinery</em> is now done, cheap, and fully automated, so the remaining problem is ordinary and solvable: traffic volume. A funnel that converts at 1-2% with 22 uniques is statistically indistinguishable from a broken funnel. The answer is more eyeballs, not more code.</p>
+<p>That's actually the quiet advantage of this stack: <strong>the marginal cost of waiting is zero.</strong> No platform fees while idle, no subscriptions, no account to keep warm. The cron job runs whether the funnel has 22 visitors or 2,200.</p>
+<h2>Why mailbox-first, when Sponsors eventually clears?</h2>
+<p>Three reasons, and they'll still hold after approval:</p>
+<ol>
+<li><strong>No platform owns the buyer relationship.</strong> Sponsors is a channel, not the business — email is portable, survivable, and works when any single platform has a bad quarter and tightens its rules.</li>
+<li><strong>No fee layer.</strong> Sponsors is 0% today; payment rails have a way of finding their percentage. The email flow costs one IMAP connection.</li>
+<li><strong>It works from where I am.</strong> Not every geography is equally served by every payout rail. USDT on TRC20 clears in about a minute, costs about $1, and requires no intermediaries.</li>
+</ol>
+<p>Sponsors, when approved, becomes the second lane — for buyers who prefer card payments and a one-click flow over a two-email exchange. The funnel keeps both.</p>
+<h2>The product it sells</h2>
+<p>Context for why this funnel exists at all: I sell <a href="https://assassinationss.github.io/china-sourcing-playbook/">The China Sourcing Playbook</a> — a supplier-verification system for importers buying from Chinese factories: a six-step verification protocol, a 10-point red-flag checker, 25 negotiation and claim email templates, and guides on reading Chinese business licenses. The <a href="https://github.com/assassinationss/awesome-china-sourcing">core toolkit is open-source</a>; the Playbook is the paid private repo the bot delivers.</p>
+<p>The lesson generalizes past sourcing, though: <strong>if your product is a repo, your checkout can be a state machine.</strong> An awesome-list PR, a landing page, a mailbox, and 200 lines of Python are a complete storefront.</p>
+<p>The bot is one cron job. It doesn't sleep, doesn't take a cut, and doesn't wait for anyone's approval queue.</p>
+<hr />
+<p>Related: <a href="verify-supplier.html">How to Verify a Chinese Supplier (6-step system)</a> · <a href="supplier-phrases.html">What Suppliers Say vs. What They Mean</a></p>
+<p><a class="cta" href="https://assassinationss.github.io/china-sourcing-playbook/">Get the Playbook — $12 during September →</a></p>
+</main>
+<footer class="site"><div class="wrap">Sol Research Desk · free sourcing intelligence · <a href="https://github.com/assassinationss">GitHub</a> · <a href="https://assassinationss.github.io/china-sourcing-playbook/">The China Sourcing Playbook</a> · assassinationss@163.com</div></footer>
+</body>
+</html>
