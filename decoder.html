@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Supplier Reply Decoder — What That Chinese Supplier Email Actually Says</title>
+<meta name="description" content="Paste any supplier email. The decoder scans it client-side for vague commitments, dodge patterns, pressure tactics, and payment red flags — then builds a custom AI prompt for a line-by-line analysis. Free, no signup, no tracking.">
+<link rel="stylesheet" href="/style.css">
+<style>
+.dc{display:grid;grid-template-columns:1.05fr .95fr;gap:26px;margin-top:18px}
+@media(max-width:760px){.dc{grid-template-columns:1fr}}
+.tin{width:100%;min-height:320px;border:1px solid var(--line);border-radius:10px;padding:14px 16px;font:14px/1.6 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:var(--navy);background:#fff;resize:vertical}
+.tin:focus{outline:2px solid #2563eb}
+.go{background:#2563eb;color:#fff;border:0;border-radius:9px;padding:12px 26px;font-size:15px;font-weight:700;cursor:pointer;margin-top:12px}
+.go:hover{background:#1d4ed8}
+.res{position:sticky;top:14px}
+.gauge{background:var(--navy);color:#fff;border-radius:12px;padding:18px 22px}
+.gauge .sub{color:#9db8d4;font-size:11.5px;letter-spacing:.5px}
+.gauge .big{font-size:30px;font-weight:800;line-height:1.1;margin:2px 0}
+.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.met{background:#16334f;border-radius:8px;padding:8px 10px}
+.met .v{font-size:20px;font-weight:800}
+.met .k{font-size:10.5px;color:#9db8d4}
+.pat{border:1px solid var(--line);border-radius:9px;padding:10px 13px;margin-top:9px;background:var(--card);font-size:13px}
+.pat b{color:var(--navy)}
+.pat .why{color:var(--muted);font-size:12px;display:block;margin-top:3px;line-height:1.5}
+.tag{font-size:10.5px;font-weight:700;border-radius:4px;padding:1px 7px;margin-right:6px;vertical-align:middle}
+.tag.r{background:#fef2f2;color:#991b1b;border:1px solid #fecaca}
+.tag.v{background:#fffbeb;color:#b45309;border:1px solid #fde68a}
+.tag.i{background:#eff6ff;color:#1e40af;border:1px solid #bfdbfe}
+.tag.g{background:#f0fdf4;color:#166534;border:1px solid #bbf7d0}
+.pgen{margin-top:14px;background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.pgen textarea{width:100%;height:150px;border:0;font:12px/1.55 ui-monospace,Menlo,Consolas,monospace;color:var(--navy);background:transparent;resize:vertical}
+.cp{background:#0f172a;color:#fff;border:0;border-radius:7px;padding:8px 18px;font-size:13px;font-weight:700;cursor:pointer;margin-top:8px}
+.embed{font-size:12px;color:var(--muted);background:var(--card);border:1px dashed var(--line);border-radius:8px;padding:10px 13px;margin-top:14px;word-break:break-all}
+</style>
+<script type="application/ld+json">
+{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "How do I know what a Chinese supplier's email actually means?", "acceptedAnswer": {"@type": "Answer", "text": "Scan the reply for the patterns that matter: vague commitments like 'no problem' with no date attached, dodge phrases like 'we will check with our engineer', pressure tactics like 'price rises tomorrow', and any change in payment account details. The decoder detects these bilingual patterns automatically and builds a custom AI prompt that turns each vague phrase into a written commitment."}}, {"@type": "Question", "name": "What are the most dangerous phrases in a supplier email?", "acceptedAnswer": {"@type": "Answer", "text": "Payment-related changes are the dealbreaker class: a personal or manager's bank account, an account switch mid-conversation, or 100% upfront demands. Second is manufactured urgency — 'another buyer wants your production slot' — which exists to stop you from verifying. The decoder flags both classes client-side before you paste anything into an AI."}}, {"@type": "Question", "name": "Is my supplier email private when using this decoder?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. The pattern scan runs entirely in your browser — no server, no account, no tracking. The generated AI prompt is meant to be pasted into your own chatbot session, where whatever privacy policy you already have with that provider applies."}}]}
+</script>
+</head>
+<body>
+<header class="site"><div class="wrap"><a href="/">🔎 Sol Research Desk</a></div></header>
+<main class="wrap">
+<h1>Supplier Reply Decoder</h1>
+<p class="meta">Free tool · by <a href="https://github.com/assassinationss">Sol Research Desk</a> · the client-side companion to the <a href="guides/supplier-phrases.html">bilingual phrase decoder</a></p>
+<p>Paste any supplier email. The scan runs in your browser — bilingual pattern detection for vague commitments, dodge phrases, pressure tactics, and payment red flags — then builds a custom AI prompt that analyzes the reply line by line.</p>
+
+<div class="dc">
+<div>
+<textarea class="tin" id="mail" placeholder="Paste the supplier's email here — English or Chinese or both.
+
+Example:
+Dear friend, no problem, we can do this quality. Our factory is very professional. Please note the raw material price is going up, maybe we should confirm the order this week. We will check with our engineer about the specification and reply you soon. Also, for the payment, our finance manager will send you our account details — it is faster if you can pay to our manager's personal account, company account has some FX issue now. Trust us, we have many customers in your country."></textarea>
+<button class="go" onclick="decode()">🔍 Decode this reply</button>
+<p style="font-size:12.5px;color:var(--muted);margin-top:10px">Nothing leaves your browser. The generated prompt goes to <em>your</em> AI session, not ours.</p>
+<div id="legend" style="margin-top:18px">
+<h2 style="font-size:16px">The four pattern classes</h2>
+<table style="font-size:13px">
+<tr><td><span class="tag v">VAGUE</span></td><td>Commitment-shaped words with no date, number, or owner attached — "no problem", "we will try".</td></tr>
+<tr><td><span class="tag i">DODGE</span></td><td>Deferral chains — "check with our engineer" — every hop adds a day of silence and removes a named accountable person.</td></tr>
+<tr><td><span class="tag r">RISK</span></td><td>Payment-account changes and manufactured urgency. The deposit-scam signature class.</td></tr>
+<tr><td><span class="tag g">SIGNAL</span></td><td>Identity tells — "our factory / our workers" vs "our partner factory" — factory voice vs middleman voice.</td></tr>
+</table>
+</div>
+</div>
+<div class="res" id="out" style="display:none">
+<div class="gauge">
+<div class="sub">DECODE SUMMARY</div>
+<div class="big" id="verdict">—</div>
+<div class="metrics">
+<div class="met"><div class="v" id="m-spec">—</div><div class="k">SPECIFICITY</div></div>
+<div class="met"><div class="v" id="m-vag">—</div><div class="k">VAGUE PHRASES</div></div>
+<div class="met"><div class="v" id="m-risk">—</div><div class="k">RISK PATTERNS</div></div>
+</div>
+</div>
+<div id="pats"></div>
+<div class="pgen">
+<b style="color:var(--navy);font-size:13.5px">⚡ Custom AI prompt (with your scan results baked in)</b>
+<textarea id="prompt" readonly></textarea>
+<button class="cp" onclick="cp()">Copy prompt → paste into ChatGPT / Claude / Gemini</button>
+</div>
+</div>
+</div>
+
+<h2>Why words beat feelings in supplier email</h2>
+<p>Every importer knows the feeling: a warm, friendly supplier reply that somehow commits to nothing. The warmth is real — Chinese business culture <em>is</em> relationship-forward — but warmth and commitment are different currencies. "No problem" (没问题) in a supplier email is not a yes; <b>a yes is a PI with the spec, date, and price in writing</b>.</p>
+<p>The patterns this tool detects are the ones that cost importers money when left unread: the vague commitments that evaporate at QC time, the deferral chains that burn weeks, the urgency theater that pressures you past verification, and the account changes that reroute your deposit to a person instead of a company.</p>
+<p>The full decoder — 12 high-stakes phrases with the Chinese side of the table explained — is in the <a href="guides/supplier-phrases.html">phrase decoder guide</a>. The complete system (25 templates, verification protocol, payment-safety tiers) is <a href="https://assassinationss.github.io/china-sourcing-playbook/">The China Sourcing Playbook</a>.</p>
+
+<h2>FAQ</h2>
+<p><b>Does the tool send my email anywhere?</b><br>No. Pure client-side JavaScript. The scan, the scoring, and the prompt generation all run in your browser tab.</p>
+<p><b>Why generate a prompt instead of analyzing it here?</b><br>Two reasons: your email stays between you and your AI provider (this page never sees it server-side), and the line-by-line judgment call — what's a cultural norm vs what's a dodge — is exactly what LLMs are good at, once the pattern scan tells them where to look.</p>
+
+<p class="embed">Embed this tool on your site: <code>&lt;iframe src="https://assassinationss.github.io/decoder.html" width="100%" height="720" style="border:0;border-radius:10px"&gt;&lt;/iframe&gt;</code></p>
+</main>
+<footer class="site"><div class="wrap">Sol Research Desk · free sourcing intelligence · <a href="https://github.com/assassinationss">GitHub</a> · <a href="https://assassinationss.github.io/china-sourcing-playbook/">The China Sourcing Playbook</a> · assassinationss@163.com</div></footer>
+<script>
+var PATS=[
+{n:'Vague commitment',cls:'v',tag:'VAGUE',re:/no problem|don'?t worry|no worry|we will try|try our best|should be (fine|ok|no problem)|it'?s ok|sure sure|no issue|没问题|放心吧|我们尽量|尽力|应该(可以|没问题)|小事/gi,why:'Commitment-shaped, commitment-free. A real commitment arrives as a PI line: spec + date + price. Count these — each one is a promise that can be walked back.'},
+{n:'Deferral / dodge',cls:'i',tag:'DODGE',re:/check with (our|my) (engineer|manager|factory|boss|team)|let me (confirm|check|ask)|I will (ask|confirm|check)|need to discuss|wait for (our|the)|问一下(我们)?(工程|经理|老板|工厂)|(需要|要)跟.{0,6}(确认|商量|沟通)/gi,why:'Every hop in the deferral chain adds ~a day of silence and removes an accountable name. Three or more in one email = your question is being socially buried, not answered.'},
+{n:'Manufactured urgency',cls:'r',tag:'RISK',re:/price.{0,20}(rise|increase|going up|up soon)|raw material|material cost|another (buyer|customer)|other customers? (want|need|asking)|last (slot|chance)|book (now|soon|your slot)|production slot|涨价|原材料.{0,10}(涨|涨了|上升)|别的客户|其他客户.{0,8}(要|抢|订)|最后的(机会|仓位)|抓紧/gi,why:'Scarcity theater exists to stop you from verifying. Real capacity quotes stay valid for days. Any "confirm today" pressure in an early-stage thread is a tactic, not information.'},
+{n:'Payment account change',cls:'r',tag:'RISK',re:/personal account|manager'?s? (personal )?account|our (finance )?manager'?s? (card|account|will send)|change (the |our )?account|new account|account details (changed|updated)|FX (issue|restriction|problem)|pay to (our|the) (manager|director|sales)|个人账户|经理.{0,8}(卡|账户|私人)|换(一下)?账户|新账户|外汇(问题|限制)|打.{0,10}个人/gi,why:'DEALBREAKER CLASS. The payment counterparty is the contract counterparty. "Company account has FX issues, pay our manager" is the single most common sentence in deposit-loss reports.'},
+{n:'100% upfront push',cls:'r',tag:'RISK',re:/100% (payment|payment upfront|advance|before)|full payment (first|before|upfront)|pay all|balance before (production|shipment)/gi,why:'DEALBREAKER CLASS. The workhorse structure is 30/70 with balance after QC. 100% upfront means every defect becomes a negotiation you already lost.'},
+{n:'Factory voice (good signal)',cls:'g',tag:'SIGNAL',re:/our factory|our production (line|capacity)|our workers|our workshop|our (three|two|\d+) production lines|我们工厂|我们的车间|我们的工人|我们的生产线/gi,why:'First-person factory language. Consistent "our factory / our workers" across emails is the voice of a manufacturer — verify it anyway with a live video walkthrough during working hours.'},
+{n:'Middleman voice (caution)',cls:'i',tag:'SIGNAL',re:/our partner factory|cooperated factory|we (source|buy) from|our supplier|factory we (work|cooperate) with|合作的工厂|我们(的)?供应商|采购自|对接的工厂/gi,why:'Not a scam — but it IS a trading company voice. Middlemen are fine if priced as middlemen; they are expensive if sold to you as "the factory".'}
+];
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;')}
+function decode(){
+var t=document.getElementById('mail').value;
+if(!t.trim()){alert('Paste a supplier email first — the placeholder is a working example if you want to try one.');return}
+var out=document.getElementById('out');out.style.display='block';
+var hits=[],risk=0,vague=0,dodge=0,nums=0,dates=0;
+PATS.forEach(function(p){
+var m=t.match(p.re)||[];m.forEach(function(x){hits.push({p:p,x:x})});
+if(p.cls==='r')risk+=m.length;
+if(p.cls==='v')vague+=m.length;
+if(p.cls==='i')dodge+=m.length;
+});
+nums=(t.match(/[$€¥]\s?\d|\b\d{3,}\b|\d+\.?\d*\s?(pcs|pieces|units|ctn|cartons|kg|tons|MOQ)/gi)||[]).length;
+dates=(t.match(/\b(by|before|within|on|after)\s+(mon|tues|wednes|thurs|fri|satur|sun)\w*|\b\d{1,2}[\/\-.]\d{1,2}([\/\-.]\d{2,4})?\b|\b(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\w*\s+\d{1,2}\b|\d+\s*(days?|weeks?|工作日|天)/gi)||[]).length;
+var spec=Math.min(100,Math.round((nums*9+dates*14)/(1+t.length/400)));
+document.getElementById('m-spec').textContent=spec+'/100';
+document.getElementById('m-vag').textContent=vague;
+document.getElementById('m-risk').textContent=risk;
+var v=document.getElementById('verdict');
+if(risk>0){v.textContent='⚠ '+risk+' risk pattern'+(risk>1?'s':'')+' — verify before wiring';v.style.color='#fca5a5'}
+else if(vague+dodge>=5){v.textContent='🍸 Warm words, thin commitments — decode line by line';v.style.color='#fcd34d'}
+else if(spec>=60){v.textContent='✓ Concrete reply — spec, dates, numbers present';v.style.color='#86efac'}
+else{v.textContent='Neutral reply — run the AI analysis';v.style.color='#e2e8f0'}
+var ph='';
+if(hits.length){
+ph=hits.slice(0,12).map(function(h){return '['+h.p.tag+'] "'+esc(h.x.slice(0,80))+'"'}).join('\n');
+}else{ph='[none detected — basic scan only]'}
+document.getElementById('pats').innerHTML=hits.slice(0,14).map(function(h){
+return '<div class="pat"><span class="tag '+h.p.cls+'">'+h.p.tag+'</span><b>'+esc(h.x.slice(0,70))+'</b><span class="why">'+h.p.why+'</span></div>'
+}).join('')||'<div class="pat"><b>No patterns detected.</b><span class="why">Either a genuinely concrete reply, or phrasing outside the current pattern library — the AI prompt below still does the line-by-line work.</span></div>';
+document.getElementById('prompt').value='Here is a reply from a Chinese supplier:\n\n"""\n'+t.trim().slice(0,4000)+'\n"""\n\nA client-side pattern scan flagged these lines:\n'+ph+'\n\nAnalyze it line by line and output a markdown table with columns: their words (quote) | literal meaning | what it actually means in Chinese business culture | risk level (none/low/high/dealbreaker) | the exact follow-up question or written commitment I should demand.\n\nThen answer: (1) What did they actually commit to — quote the exact words? (2) What did they dodge or defer, and who is the named accountable person for each? (3) Which flagged patterns are benign cultural norms vs. genuine risks in this context? (4) What cultural context am I missing? (5) The 3 questions I must ask next, phrased so a vague answer would be visible as vague.\n\nRules: do not soften. If a pattern is absent, say absent. If the payment instruction changed counterparty, mark it DEALBREAKER regardless of tone.';
+out.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function cp(){var t=document.getElementById('prompt');t.select();document.execCommand('copy');var b=event.target;b.textContent='✓ Copied — paste into your AI now';setTimeout(function(){b.textContent='Copy prompt → paste into ChatGPT / Claude / Gemini'},2500)}
+</script>
+</body>
+</html>
