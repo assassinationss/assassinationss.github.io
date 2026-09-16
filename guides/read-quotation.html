@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>How to Read a Chinese Supplier's Quotation (Line by Line)</title>
+<meta name="description" content="Quote-sheet anatomy from the Chinese side: EXW/FOB/CIF decoding, the line items suppliers quietly drop, unit-price math traps, and the 3 questions that surface the real total.">
+<link rel="canonical" href="https://assassinationss.github.io/guides/read-quotation.html">
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<header class="site"><div class="wrap"><a href="/">🔎 Sol Research Desk</a></div></header>
+<main class="wrap">
+<h1>How to Read a Chinese Supplier's Quotation</h1>
+<p class="meta">By <a href="https://github.com/assassinationss">Sol Research Desk</a> · free guide · <a href="https://github.com/assassinationss/awesome-china-sourcing">toolkit repo</a></p>
+<blockquote>
+<p>The quote is not a price. It's a negotiation position wearing a spreadsheet. Maintained by <a href="https://github.com/assassinationss">Sol Research Desk</a>. Last updated: September 2026.</p>
+</blockquote>
+<p>Two quotes for the same product can differ 40% while both being "true." The difference lives in the Incoterm, the line items that are missing, and the unit-price math. Here's how to read one the way the desk that wrote it does.</p>
+
+<h2>Step 1: Find the Incoterm before anything else</h2>
+<p>Three letters at the top of the quote decide what the number means:</p>
+<table>
+<tr><th>Term</th><th>You're paying for</th><th>What's on you</th></tr>
+<tr><td><strong>EXW</strong> (Ex Works)</td><td>Product, at their factory gate</td><td>Everything: export clearance, trucking, freight, insurance. Highest hidden-cost risk.</td></tr>
+<tr><td><strong>FOB</strong> (named port)</td><td>Product + export clearance + delivery onto the vessel</td><td>Ocean freight + destination charges. The professional default for comparison.</td></tr>
+<tr><td><strong>CIF</strong> (named port)</td><td>FOB + ocean freight + minimum insurance</td><td>Destination charges. Comfortable but opaque — freight becomes their profit center.</td></tr>
+</table>
+<p><strong>The rule:</strong> never compare quotes on different terms. An EXW price next to a CIF price is two different products wearing the same number. Convert everything to FOB first — or better, run all three through the <a href="/calculator.html">Landed Cost Calculator</a> and compare the destination totals.</p>
+
+<h2>Step 2: Hunt for what's missing</h2>
+<p>Sophisticated quotes win by omission. The line items most often quietly dropped:</p>
+<ul>
+<li><strong>Packaging</strong> — "standard export carton" vs. printed retail box can be 5–15% of unit cost. If packaging isn't a line, it isn't included.</li>
+<li><strong>Inner packing / polybag / desiccant</strong> — the small stuff that molds a container by the time it crosses the equator.</li>
+<li><strong>Tooling or setup</strong> — absent from the unit price, arriving later as a separate invoice "per our discussion" that never happened in writing.</li>
+<li><strong>Certification / testing</strong> — CE, FCC, RoHS lab fees. Ask which report is included, whose name is on it, and whether it's transferable (a report in the factory's name is not yours).</li>
+<li><strong>Validity</strong> — a quote with no validity window is a snapshot, not an offer. Steel, resin, and exchange rates move; 30 days written validity is standard.</li>
+</ul>
+
+<h2>Step 3: Check the unit-price math</h2>
+<p>Three classic traps, all invisible unless you divide things yourself:</p>
+<ul>
+<li><strong>MOQ tier illusion</strong> — the headline price is the 10,000-unit tier; your 1,000-unit order prices two tiers up. Always read the tier that matches your real quantity.</li>
+<li><strong>Quantity-based discounts on value, not count</strong> — "5% off over $20,000" sounds like a quantity break; it's often just a payment-volume nudge with no production efficiency behind it.</li>
+<li><strong>Per-piece vs. per-set vs. per-pack</strong> — a quote priced per pack of 12 quietly multiplies by 12 anything you budgeted per piece. Grep the unit column before any math.</li>
+</ul>
+
+<h2>Step 4: The 3 questions that surface the real total</h2>
+<p>Send these before you accept any quote:</p>
+<ol>
+<li>"<em>Is this FOB [port], and which charges are NOT included in this price?</em>" — forces the omission list into writing.</li>
+<li>"<em>What is the price validity, and what would change it?</em>" — surfaces the validity window and their cost drivers.</li>
+<li>"<em>At what quantity does the next price tier break, and is tooling a separate charge?</em>" — pins the tier structure and the setup fee before it pins you.</li>
+</ol>
+<p>Expect the answers to arrive wrapped in courtesy — "no problem," "very favorable price for you," "this is our best support." Run the reply through the <a href="/decoder.html">Supplier Reply Decoder</a> before you trust it: "no problem" is not a spec, and "best support" is not a validity window.</p>
+
+<h2>Step 5: Rebuild the quote before you compare</h2>
+<p>The professional move: enter their FOB price, the freight quote from your forwarder, the duty rate, and the destination charges into one landed-cost model — then compare suppliers on the number that actually hits your bank. A 4% cheaper FOB quote with 20% worse packaging math is a more expensive supplier. The <a href="/calculator.html">calculator</a> does this arithmetic live; the discipline of doing it is what makes quotes comparable.</p>
+
+<div style="background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 22px;margin:26px 0">
+<b style="font-size:16px">🛠 The full toolkit</b>
+<p style="font-size:14px;color:var(--muted);margin:8px 0 10px">Quote in hand → <a href="/calculator.html">Landed Cost Calculator</a> (the real total). Supplier behind the quote → <a href="/checker.html">Red-Flag Checker</a>. Their replies → <a href="/decoder.html">Reply Decoder</a>. Next step → <a href="order-samples.html">How to Order Samples</a>.</p>
+</div>
+
+<p>The <a href="https://assassinationss.github.io/china-sourcing-playbook/">China Sourcing Playbook</a> includes the quote-comparison template (line-item normalization across suppliers) and the exact wording for the three questions above.</p>
+
+<h2>Related</h2>
+<p><a href="verify-supplier.html">How to Verify a Chinese Supplier</a> · <a href="order-samples.html">How to Order Samples</a> · <a href="supplier-phrases.html">What Suppliers Say vs. What They Mean</a> · <a href="pay-supplier.html">How to Pay a Chinese Supplier Safely</a></p>
+</main>
+<footer class="site"><div class="wrap">Sol Research Desk · free sourcing intelligence · <a href="https://github.com/assassinationss">GitHub</a> · <a href="https://assassinationss.github.io/china-sourcing-playbook/">The China Sourcing Playbook</a> · assassinationss@163.com</div></footer>
+</body>
+</html>
