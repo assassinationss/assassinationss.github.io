@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Black Friday 2026 Order Deadline Calculator — Last Safe Order Dates from China</title>
+<meta name="description" content="Black Friday 2026 is Nov 27 — but the real inventory deadline is ~Nov 20, when early deals open. Calculate your last order date from China by freight mode: express ocean, air, or the CNY 2027 bridge play.">
+<link rel="canonical" href="https://assassinationss.github.io/black-friday-deadline.html">
+<link rel="stylesheet" href="/style.css">
+<style>
+.calc{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:20px}
+@media(max-width:720px){.calc{grid-template-columns:1fr}}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:13.5px;font-weight:600;color:var(--navy);margin-bottom:4px}
+.field input,.field select{width:100%;padding:9px 12px;border:1px solid var(--line);border-radius:8px;font-size:15px;background:#fff;color:#1a2b3c}
+.hint{font-size:12.5px;color:var(--muted);margin-top:4px}
+.result{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 22px;margin-top:18px}
+.result.danger{border-color:#dc2626;background:#fef2f2}
+.result.warn{border-color:#d97706;background:#fffbeb}
+.result.ok{border-color:#15803d;background:#f0fdf4}
+.result .big{font-size:32px;font-weight:800;margin:6px 0 2px}
+.result .sub{color:#9db8d4;font-size:13.5px}
+.days{font-size:15px;font-weight:700;color:#ffd479;margin-top:6px}
+.dates{margin-top:16px;font-size:13.5px;width:100%}
+.dates td{border-color:#2a4a6b;padding:6px 8px}
+.dates td:first-child{color:#cfe0f0}
+.dates td:last-child{font-weight:700}
+.note{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 18px;font-size:14px;color:var(--muted);margin-top:16px}
+button.recalc{background:var(--navy-l);color:#fff;border:0;padding:11px 24px;border-radius:8px;font-weight:700;font-size:15px;cursor:pointer;margin-top:6px}
+</style>
+<script type="application/ld+json">
+{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "When is Black Friday 2026?", "acceptedAnswer": {"@type": "Answer", "text": "Friday, November 27, 2026, with Cyber Monday on November 30. But the working deadline for inventory is about a week earlier: Amazon and major retailers open early-access deals around November 20, so stock needs to be sellable by then, not by the 27th."}}, {"@type": "Question", "name": "Can I still order from China for Black Friday 2026?", "acceptedAnswer": {"@type": "Answer", "text": "It depends on freight mode and lead time. By early October, standard ocean freight to the US is already too late for Black Friday. Express ocean services still work for short-lead-time restocks until mid-to-late October, and air freight stays viable into early November. The calculator converts your lead time into a last order date by mode."}}, {"@type": "Question", "name": "What if I missed the Black Friday ordering deadline?", "acceptedAnswer": {"@type": "Answer", "text": "Flip to the CNY 2027 bridge play: lock supplier pricing and production slots in December while factories are quiet after the holiday rush, ship before the Chinese New Year shutdown starts February 6, 2027, and land inventory for the January-to-March restocking season when everyone else is fighting the post-CNY backlog."}}]}
+</script>
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@type": "WebApplication",
+ "name": "Black Friday 2026 Order Deadline Calculator",
+ "url": "https://assassinationss.github.io/black-friday-deadline.html",
+ "description": "Calculates your last safe order date from China for the Black Friday 2026 sales window, by freight mode.",
+ "applicationCategory": "BusinessApplication",
+ "operatingSystem": "Web",
+ "offers": {
+  "@type": "Offer",
+  "price": "0",
+  "priceCurrency": "USD"
+ },
+ "isAccessibleForFree": true,
+ "inLanguage": "en"
+}
+</script>
+</head>
+<body>
+<header class="site"><div class="wrap"><a href="/">🔎 Sol Research Desk</a></div></header>
+<main class="wrap">
+<h1>Black Friday 2026 Order Deadline Calculator</h1>
+<p class="meta">Free tool · by <a href="https://github.com/assassinationss">Sol Research Desk</a> · part of the <a href="https://github.com/assassinationss/awesome-china-sourcing">China Sourcing toolkit</a></p>
+<p><b>Black Friday 2026 lands Friday, November 27 — Cyber Monday November 30.</b> That's the date everyone plans around. The one that actually decides whether you participate is about a week earlier: <b>~November 20, when early-access deals open</b>. Inventory that arrives on the 26th doesn't restock Black Friday; it restocks the returns season.</p>
+<p>Work backwards from the <i>real</i> start of the sales window, not the headline date. This calculator maps your production lead time and freight mode onto that deadline — and tells you what to do if your PO can't make it.</p>
+
+<div class="calc">
+<div>
+<h3 style="margin-top:0">Your inputs</h3>
+<div class="field"><label>Production lead time (days)</label><input id="lead" type="number" step="1" value="15"><div class="hint">PO + deposit → goods ready, ex-works. Restocks of existing SKUs run 10–20; new SKUs 25–40. Ask the factory for <i>their</i> number, then add a week.</div></div>
+<div class="field"><label>Freight mode (door-to-FBA-warehouse transit)</label>
+<select id="mode">
+<option value="40">Standard ocean (US West) — ~40 days</option>
+<option value="24" selected>Express ocean (CLX/EXX class) — ~24 days</option>
+<option value="10">Air freight — ~10 days</option>
+<option value="4">Courier (DHL/FedEx, small lots) — ~4 days</option>
+</select>
+<div class="hint">Includes customs + the holiday-crush warehouse appointment queue. Peak-season appointments alone add 3–7 days.</div></div>
+<div class="field"><label>Internal buffer (days)</label><input id="buf" type="number" step="1" value="3"><div class="hint">Final QC, labeling, and the day your ops team actually processes the inbound.</div></div>
+<button class="recalc" onclick="calc()">Calculate my deadline</button>
+</div>
+<div>
+<h3 style="margin-top:0">Result</h3>
+<div id="res" class="result"><div class="big">—</div><div class="sub">Enter your numbers above</div></div>
+<div class="note" id="note">The calculator judges against <b>November 20</b> — the early-deals floor. If your mode+lead time only reaches November 27, you're restocking the returns season, not Black Friday.</div>
+</div>
+</div>
+
+<h2>The calendar nobody prints</h2>
+<table class="dates">
+<tr><td>~Nov 13–20</td><td>Early-access deals open (Prime members, retailer VIP windows) — <b>the real sellable-by date</b></td></tr>
+<tr><td>Nov 27</td><td>Black Friday</td></tr>
+<tr><td>Nov 30</td><td>Cyber Monday</td></tr>
+<tr><td>Dec–Jan</td><td>Returns season — Q1 cash-flow problem for over-bought stock</td></tr>
+<tr><td>Feb 6, 2027</td><td>Chinese New Year — the next hard China-side cutoff (<a href="cny-deadline.html">CNY deadline calculator</a>)</td></tr>
+</table>
+
+<h2>What buyers get wrong (four ways)</h2>
+<p><b>1. "Black Friday is one day."</b> Amazon's holiday machine opens roughly a week early, and the big markdowns run through Cyber Monday. Plan for a 10-day sales window starting ~Nov 20 and you'll size orders honestly instead of doubling down mid-panic.</p>
+<p><b>2. "Ocean still works in October."</b> Standard ocean to the US needs ~40 days door-to-warehouse even in a calm season — in October you're already booking into holiday port congestion. For Black Friday it closed in September. Express ocean is the only sea mode still alive now, and only for short-lead restocks.</p>
+<p><b>3. "Missed the window, so skip the season."</b> Cyber Monday plus the December gift run can still move volume if you can air-freight by early November. And what sells out is your signal for Q1 — which runs straight into the CNY wall.</p>
+<p><b>4. "Air freight is emergency pricing, never worth it."</b> Peak-season air runs 30–50% above normal. Run the math against your margin per unit with the <a href="calculator.html">landed-cost calculator</a> — for a proven bestseller, paying $1.80/unit to keep a $14 margin alive for 10 extra selling days is not a close call.</p>
+
+<h2>If you can't make it: the CNY 2027 bridge play</h2>
+<p>Missing Black Friday doesn't mean waiting for 2027. The strongest position you can take in Q4:</p>
+<p><b>December</b> — factories are at their quietest after the holiday rush and the pre-CNY panic hasn't started. Lock <i>next year's</i> pricing and production slots now, when your leverage is highest. <b>January</b> — place the PO so goods ex-works before the February 6 shutdown. <b>Result</b> — inventory lands for the January–March restocking season, while competitors who slept fight the post-CNY backlog and March repricing.</p>
+<p>The full reverse calendar, with the real worker-departure and trucker-cutoff dates: <a href="cny-deadline.html"><b>CNY 2027 Order Deadline Calculator →</b></a></p>
+
+<div class="flag" style="margin-top:26px">
+<b>Every date on this page is only as good as your supplier's word.</b> Whether you're rushing a Black Friday restock or locking a bridge-play order, the same three questions catch the factories that fold under deadline pressure: the <a href="checker.html">red-flag checker</a> runs them in 10 minutes. Full verification system, negotiation templates, and the 10 AI sourcing prompts: <a href="china-sourcing-playbook/">The China Sourcing Playbook 2026</a>.
+</div>
+
+<footer class="wrap" style="margin-top:34px;padding:14px 0;border-top:1px solid var(--line);color:var(--muted);font-size:13px">
+Sol Research Desk · free sourcing tools · <a href="/">all guides</a> · <a href="https://github.com/assassinationss/awesome-china-sourcing">GitHub</a>
+</footer>
+<script>
+function calc(){
+var lead=+document.getElementById('lead').value||0;
+var trans=+document.getElementById('mode').value;
+var buf=+document.getElementById('buf').value||0;
+var SALES=new Date('2026-11-20');
+var last=new Date(SALES.getTime()-(trans+lead+buf)*864e5);
+var today=new Date();
+var days=Math.ceil((last-today)/864e5);
+var res=document.getElementById('res'),note=document.getElementById('note');
+var f=function(d){return d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});};
+if(days<0){
+res.className='result danger';
+res.innerHTML='<div class="big">✗ Missed it — by '+(-days)+' days</div><div class="sub">Last order date was '+f(last)+' · '+document.getElementById('mode').selectedOptions[0].text.split('—')[0].trim()+' + '+lead+'d lead</div><div class="days">Black Friday is closed for this mode</div>';
+note.innerHTML='<b>Flip to the bridge play.</b> Don\u2019t force a late PO into peak-season freight at panic rates. December is when factories are quiet and your leverage is highest: lock pricing and slots for Q1, ship before the Feb 6 CNY shutdown, land inventory for the restocking season. Full reverse calendar: <a href="cny-deadline.html">CNY 2027 deadline calculator</a>.';
+}
+else if(days<=7){
+res.className='result danger';
+res.innerHTML='<div class="big">⏳ '+days+' days left</div><div class="sub">PO goes out by '+f(last)+' · '+document.getElementById('mode').selectedOptions[0].text.split('—')[0].trim()+' + '+lead+'d lead</div><div class="days">This is a this-week decision</div>';
+note.innerHTML='<b>Alive, but barely.</b> Deposit today, written production-slot confirmation, and a <a href="checker.html">red-flag check</a> before you wire \u2014 deadline-rushed factories are where defect rates spike. If the factory hedges on the ex-works date, downgrade to air freight now instead of gambling the window.';
+}
+else if(days<=21){
+res.className='result warn';
+res.innerHTML='<div class="big">'+days+' days of room</div><div class="sub">PO by '+f(last)+' · '+document.getElementById('mode').selectedOptions[0].text.split('—')[0].trim()+' + '+lead+'d lead</div><div class="days">Window is open but shrinking</div>';
+note.innerHTML='<b>Workable.</b> Get the PO out this week anyway \u2014 peak-season freight books out in reverse order of urgency. Then confirm the goods-ready date against the <a href="cny-deadline.html">CNY 2027 calendar</a> in the same conversation: if this order slips into January, it collides with the pre-CNY rush.';
+}
+else{
+res.className='result ok';
+res.innerHTML='<div class="big">✓ '+days+' days of room</div><div class="sub">PO by '+f(last)+' · '+document.getElementById('mode').selectedOptions[0].text.split('—')[0].trim()+' + '+lead+'d lead</div><div class="days">Comfortable margin</div>';
+note.innerHTML='<b>You have runway.</b> Use it on the two things that decide December margin: a real <a href="checker.html">supplier verification pass</a> before the deposit, and a landed-cost check that survives <a href="calculator.html">peak-season freight math</a> \u2014 not just the supplier\u2019s quoted unit price.';
+}
+}
+calc();
+</script>
+</body>
+</html>
